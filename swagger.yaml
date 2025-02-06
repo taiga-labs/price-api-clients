@@ -1,0 +1,141 @@
+definitions:
+  api.ApiErrResponse:
+    properties:
+      error:
+        description: Ошибка, если есть.
+        type: string
+      status:
+        description: Статус ответа.
+        type: string
+    type: object
+  api.ApiSuccessResponse:
+    properties:
+      price:
+        description: Рассчитанная цена.
+        type: integer
+      status:
+        description: Статус ответа.
+        type: string
+    type: object
+  api.GetPriceRequest:
+    properties:
+      asset_out:
+        description: Выходящий актив (Нужен в случае stonfi).
+        type: string
+      custom:
+        description: Использовать/Не использовать кастомные настройки.
+        type: boolean
+      custom_settings:
+        allOf:
+        - $ref: '#/definitions/types.CustomSettings'
+        description: Кастомные настройки.
+      dex:
+        description: DEX, адрес пула которой был указан в поле pool_address.
+        type: string
+      pool_address:
+        description: Адрес пула (Нужен в случае dedust).
+        type: string
+    type: object
+  types.CustomSettings:
+    properties:
+      amount:
+        description: Количество актива
+        type: integer
+      asset_in:
+        description: Актив, цену ЗА который нужно получить(т.е тот, который отправляем
+          в пул/меняем)
+        type: string
+    type: object
+info:
+  contact: {}
+  description: Позволяет получить цену любого количества любых активов, которые представлены
+    в пулах на биржах DeDust и StonFi в сети блокчейна TON
+  title: Price TON blockchain parser and streaming api
+  version: 1.0.0
+paths:
+  /get_price/:
+    post:
+      consumes:
+      - application/json
+      description: Возвращает цену указанного актива в указанном пуле на конкретной
+        DEX. По умолчанию возвращается цена Jetton за 1 TON, если не указаны custom
+        settings. В custom settings можно изменить размер входного актива и его тип,
+        например, если нужно получить цену в TON, эквивалентную определённому количеству
+        Jetton, или же если в пуле не участвует TON
+      operationId: get_price
+      parameters:
+      - description: GetPrice Request
+        in: body
+        name: GetPriceRequest
+        required: true
+        schema:
+          $ref: '#/definitions/api.GetPriceRequest'
+      - description: Authorization token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: The price has been received
+          schema:
+            $ref: '#/definitions/api.ApiSuccessResponse'
+        "400":
+          description: Incorrect request body serealization
+          schema:
+            $ref: '#/definitions/api.ApiErrResponse'
+        "403":
+          description: Incorrect authorization token
+          schema:
+            $ref: '#/definitions/api.ApiErrResponse'
+  /subscribe/:
+    get:
+      description: Позволяет получать уведомления о цене в конкретном пуле при её
+        изменении на заданное количество процентов через sseclient
+      operationId: subscribe
+      parameters:
+      - description: Ценовое изменение для триггера уведомления клиенту в процентах
+          (дробная часть числа отделяется точкой).
+        in: header
+        name: trigger_perc
+        required: true
+        type: string
+      - description: название DEX.
+        in: header
+        name: dex_name
+        required: true
+        type: string
+      - description: адрес актива, цену ЗА который будем получать.
+        in: header
+        name: asset_in
+        required: true
+        type: string
+      - description: адрес актива, цену В котором будем получать.
+        in: header
+        name: asset_out
+        required: true
+        type: string
+      - description: адрес пулa.
+        in: header
+        name: pool_address
+        required: true
+        type: string
+      - description: Authorization token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      responses:
+        "400":
+          description: '[ there is no such DEX, specify ''dedust'' or ''stonfi'' ]
+            OR [ incorrect trigger perc float value ] OR [ Incorrect request body
+            serealization ]'
+          schema:
+            $ref: '#/definitions/api.ApiErrResponse'
+        "403":
+          description: Incorrect authorization token
+          schema:
+            $ref: '#/definitions/api.ApiErrResponse'
+swagger: "2.0"
