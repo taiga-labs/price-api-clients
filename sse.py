@@ -6,9 +6,9 @@ import argparse
 """
 EXAMPLE:
 
-python3 main.py \
+python3 sse.py \
     --token "!!PublicTests!!" \
-    --trigger_perc "0.0001" \
+    --trigger_perc "0.01" \
     --dex_name "dedust" \
     --asset_in "TON" \
     --asset_out "EQCxE6mUtQJKFnGfaROTKOt1lZbDiiX1kCixRv7Nw2Id_sDs" \
@@ -16,7 +16,7 @@ python3 main.py \
 """
 
 class SSEClient:
-    def __init__(self, api_address, timeout=None):
+    def __init__(self, api_address="http://127.0.0.1:8081", timeout=None):
         self.api_address = api_address
         self.timeout = timeout or httpx.Timeout(
             connect=10.0,
@@ -87,7 +87,7 @@ class SSEClient:
 def main():
     args = SSEClient.parse_arguments()
 
-    client = SSEClient(api_address="http://127.0.0.1:8081")
+    client = SSEClient()
 
     client.listen_sse(
         trigger_perc=args.trigger_perc,
