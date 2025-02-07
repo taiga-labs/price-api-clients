@@ -16,7 +16,7 @@ python3 sse.py \
 """
 
 class SSEClient:
-    def __init__(self, api_address="http://127.0.0.1:8081", timeout=None):
+    def __init__(self, api_address="http://80.90.187.242:8087", timeout=None):
         self.api_address = api_address
         self.timeout = timeout or httpx.Timeout(
             connect=10.0,
