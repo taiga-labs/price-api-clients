@@ -138,4 +138,8 @@ paths:
           description: Incorrect authorization token
           schema:
             $ref: '#/definitions/api.ApiErrResponse'
+        "500":
+          description: Internal server error(liteapi lib error)
+          schema:
+            $ref: '#/definitions/api.ApiErrResponse'
 swagger: "2.0"
