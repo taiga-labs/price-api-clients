@@ -2,7 +2,7 @@ import json
 import requests
 
 class DEXPrices:
-        def __init__(self, api_address="http://80.90.187.242:8087/get_price/", custom=False, 
+        def __init__(self, api_address="http://80.90.187.242:7979/get_price/", custom=False, 
                      pool_address=None, asset_in=None, asset_out=None, amount=None):
             self.api_address = api_address
             

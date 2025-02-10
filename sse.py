@@ -13,10 +13,19 @@ python3 sse.py \
     --asset_in "TON" \
     --asset_out "EQCxE6mUtQJKFnGfaROTKOt1lZbDiiX1kCixRv7Nw2Id_sDs" \
     --pool_address "EQA-X_yo3fzzbDbJ_0bzFWKqtRuZFIRa1sJsveZJ1YpViO3r"
+    
+    
+python3 sse.py \
+    --token "!!PublicTests!!" \
+    --trigger_perc "0.01" \
+    --dex_name "dedust" \
+    --asset_in "TON" \
+    --asset_out "EQBYnUrIlwBrWqp_rl-VxeSBvTR2VmTfC4ManQ657n_BUILD" \
+    --pool_address "EQCm0PCt-WNMWChT4MaMeIJzmg6boIwLPja3BxGZP8ijhRxZ"
 """
 
 class SSEClient:
-    def __init__(self, api_address="http://80.90.187.242:8087", timeout=None):
+    def __init__(self, api_address="http://80.90.187.242:7979", timeout=None):
         self.api_address = api_address
         self.timeout = timeout or httpx.Timeout(
             connect=10.0,
